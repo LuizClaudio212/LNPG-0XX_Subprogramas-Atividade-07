@@ -1,22 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
-void printarResultado(float resultado);
+void printarResultado(float resultado) {
+    if (!isnan(resultado)) {
+        printf("Resultado: %.2f\n", resultado);
+    } else {
+        printf("Erro! Divisão por zero.\n");
+    }
+}
 
 
 void printarDivisaobyzero() {
     printf("Erro! Divisão por zero.\n");
-}
-
-
-void divisao(float num1, float num2) {
-    if (num2 != 0) {
-        float resultado = num1 / num2;
-        printarResultado(resultado);
-    } else {
-        printarDivisaobyzero();
-    }
 }
 
 
@@ -27,47 +24,82 @@ float *PrimerioESegundoNum() {
         return NULL; 
     }
 
+    int validNums = 0;
 
-    printf("Digite o primeiro número: ");
-    scanf("%f", &num[0]);
-    printf("Digite o segundo número: ");
-    scanf("%f", &num[1]);
+    do {
+        printf("Digite o primeiro número: ");
+        if (scanf("%f", &num[0]) != 1) {
+            printf("Erro: entrada inválida para o primeiro número.\n");
+            while (getchar() != '\n');
+        } else {
+            validNums++;
+        }
+    } while (!validNums);
+
+    validNums = 0;
+
+    do {
+        printf("Digite o segundo número: ");
+        if (scanf("%f", &num[1]) != 1) {
+            printf("Erro: entrada inválida para o segundo número.\n");
+            while (getchar() != '\n');
+        } else {
+            validNums++;
+        }
+    } while (!validNums);
 
     return num;
 }
 
 
-void multiplicacao(float num1, float num2) {
-    float resultado;
-    resultado = num1 * num2;
-    printarResultado(resultado);
+float divisao(float num1, float num2) {
+    if (num2 != 0) {
+        return num1 / num2;
+    } else {
+        return NAN;
+    }
 }
 
 
-void subtracao(float num1, float num2) {
-    float resultado;
-    resultado = num1 - num2;
-    printarResultado(resultado);
+float multiplicacao(float num1, float num2){
+
+    return num1 * num2;
 }
 
 
-void printarResultado(float resultado) {
-    printf("Resultado: %.2f\n", resultado);
+float subtracao(float num1, float num2){
+
+    return num1 - num2;
 }
 
 
-void soma(float num1, float num2) {
-    float resultado;
-    resultado = num1 + num2;
-    printarResultado(resultado);
+float soma(float num1, float num2){
+    
+    return num1 + num2;
+}
+
+char EscolherOperador(){
+    char operador;
+    int valido = 0;
+    
+    do {
+        printf("Digite a operação (+, -, *, /): ");
+        scanf(" %c", &operador);
+        if (operador == '+' || operador == '-' || operador == '*' || operador == '/')
+            valido = 1;
+        else
+            printf("Operador inválido. Por favor, tente novamente.\n");
+        while (getchar() != '\n');
+    } while (!valido);
+    
+    return operador;
 }
 
 
 int menu() {
     char operador;
-    float num1, num2;
-    printf("Digite a operação (+, -, *, /): ");
-    scanf(" %c", &operador); 
+    float resultado, num1, num2;
+    operador = EscolherOperador();
     float *numeros = PrimerioESegundoNum();
     if (numeros != NULL) {
         num1 = numeros[0]; 
@@ -76,23 +108,23 @@ int menu() {
     } else {
         return 1;
     }
+
+
     switch (operador) {
         case '+':
-            soma(num1, num2);
+            resultado = soma(num1, num2);
             break;
         case '-':
-            subtracao(num1, num2);
+            resultado = subtracao(num1, num2);
             break;
         case '*':
-            multiplicacao(num1, num2);
+            resultado = multiplicacao(num1, num2);
             break;
         case '/':
-            divisao(num1, num2);
+            resultado = divisao(num1, num2);
             break;
-        default:
-            printf("Operador inválido.\n");
-            return 0;
     }
+    printarResultado(resultado);
     return 1;
 }
 
